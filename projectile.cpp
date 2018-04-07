@@ -41,3 +41,15 @@ Projectile Projectile::duplicate(Projectile& pro){
 void Projectile::output(){
     std::cout << this->x << std::endl;
 }
+
+float Projectile::getDiameter(){
+    return this->diameter;
+}
+
+float Projectile::getX(){
+    return this->x;
+}
+
+float Projectile::getY(){
+    return this->y;
+}

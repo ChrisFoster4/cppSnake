@@ -4,6 +4,7 @@
 #include <ctime> //Needed for srand ( time(NULL) );
 #include <list> //Needed fro std::list
 #include <pthread.h>
+#include <cmath> //For sqrt
 #include "projectile.cpp"
 
 float createRandCord(void);
