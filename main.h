@@ -5,6 +5,7 @@
 #include <list> //Needed fro std::list
 #include <pthread.h>
 #include <cmath> //For sqrt
+#include <string>
 #include "projectile.h"
 
 float createRandCord(void);
