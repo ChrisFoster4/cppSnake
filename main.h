@@ -13,4 +13,4 @@ void displayMe(void);
 void drawRectangle(void);
 void keyPressed(unsigned char key,int x,int y);
 void keyUp(unsigned char key,int x,int y);
-void detectCollisions();
+void detectCollisions(void);

@@ -11,7 +11,7 @@
 
 
 Projectile proj; //TODO find a better way to make this accesible to display func than global variable
-Projectile proj2;
+Projectile fruit;
 bool nIsPressed = false;
 bool lIsPressed = false;
 bool hIsPressed = false;
@@ -21,81 +21,69 @@ bool wIsPressed = false;
 bool sIsPressed = false;
 bool aIsPressed = false;
 bool dIsPressed = false;
-bool rightIsPressed = false;
-bool leftIsPressed = false;
+bool gameRunning = true;
+int score = 0;
 
 #define tickSpeed 0.1
 #define screenWidth 1920
 #define screenHeight 1080
-#define createRandCord ((((rand()) % 200 + 1)-100)*0.01)//Generates a float between -1 and 1
+#define CREATE_RANDOM_CORD ((((rand()) % 200 + 1)-100)*0.01)//Generates a float between -1 and 1
+#define DEBUG 0 //Change to 1 for debug statments
 
-bool gameRunning = true;
 
-std::list<Projectile> listOfProjectiles  = {proj,proj2};
 
-void detectCollisions(){
-    std::list<Projectile> listOfProjectiles  = {proj,proj2};
-    for (auto i : listOfProjectiles){
-        i.output();
-    }
-
-    std::cout <<"proj location:\n";
-    proj.output();
-    std::cout <<"proj2 location:\n";
-    proj2.output();
+void detectCollisions(void){ //TODO move to util file
     float projX = proj.getX();
     float projY = proj.getY();
-    float projDiameter = proj.getDiameter();
-    float proj2X = proj2.getX();
-    float proj2Y = proj2.getY();
-    float proj2Diameter = proj2.getDiameter();
-    float combinedDiameter = projDiameter + proj2Diameter;
-    float distanceBetween = sqrt(pow(2,proj2X-projX)+pow(2,proj2Y-projY));
-    std::cout << "Distance betwen="<< distanceBetween <<std::endl;
+    float proj2X = fruit.getX();
+    float combinedRadius = proj.getRadius() + fruit.getRadius();
+    float distanceBetween = sqrt(pow(proj2X-projX,2)+pow(fruit.getY()-proj.getY(),2));
+
+    if (DEBUG) {
+        std::cout << "Distance between=" << distanceBetween << '\n';
+        std::cout << "combined" << combinedRadius << '\n';
+    }
+    if (distanceBetween <= combinedRadius){
+     score += 1;
+     std::cout<< "Score: " << score << '\n';
+     fruit.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD,0.05);
+    }
+    if (projX > 1) gameRunning = false;
+    if (projX <-1) gameRunning = false;
+    if (projY > 1) gameRunning = false;
+    if (projY <-1) gameRunning = false;
 }
 
 
 /*
  This function is called whilst the system is idle in the glutMainLoop
 */
-void display(){
+void display(void){
     //Can't use switch statement as it will block key combinations
 glClear(GL_COLOR_BUFFER_BIT); //Creates a black background to the window
-    if (nIsPressed) {
-        std::cout<<"Creating x\n";
-        Projectile x = proj2.duplicate(proj2);
-        x.movePosition(0,0,0.05);
-    }
-
     if (lIsPressed) proj.movePosition(0.05,0,0.05);
     if (hIsPressed) proj.movePosition(-0.05,0,0.05);
-    if (jIsPressed) proj.movePosition(0,-0.05,0.05);
     if (kIsPressed) proj.movePosition(0,0.05,0.05);
-
-    if (dIsPressed) proj2.movePosition(0.05,0,0.05);
-    if (aIsPressed) proj2.movePosition(-0.05,0,0.05);
-    if (sIsPressed) proj2.movePosition(0,-0.05,0.05);
-    if (wIsPressed) proj2.movePosition(0,0.05,0.05);
+    if (jIsPressed) proj.movePosition(0,-0.05,0.05);
 
     proj.movePosition(0,0,0.05); //Forcing to draw the shapes every frame. TODO this seems kinda hacky
-    proj2.movePosition(0,0,0.05);
+    fruit.movePosition(0,0,0.05);
     detectCollisions();
 }
 
-void *timer(void *threadID){ //TODO make timer appear on screen
+void *timer(void *threadID){ //TODO make timer appear on screen //TODO move to util file
     float duration = 0;
     while(gameRunning){
-        // std::cout << duration << std::endl;
         duration += tickSpeed;
         sleep(tickSpeed);
     }
     std::cout<<"Game ran for: " << duration <<" seconds\n";
-    pthread_exit(NULL);
+    exit(0);
+
 }
 
 int main(int argc, char** argv){
-    srand ( time(NULL) ); //Seeds the random number generator. Without it same numbers generated every time the program is run
-
+    srand(time(NULL)); //Seeds the random number generator. Without it same numbers generated every time the program is run
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE);
     glutInitWindowSize(screenWidth,screenHeight);
@@ -106,15 +94,13 @@ int main(int argc, char** argv){
     glutKeyboardUpFunc(keyUp);
 
     //Creating our objects
-    proj.setPosition(createRandCord,createRandCord,0.05);
-    // proj2.setPosition(createRandCord,createRandCord,0.05);
+    proj.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD,0.05);
 
     //Creating a new thread for the timer
     pthread_t timerThread; //Only 1 thread for now so no need to store it in an array.
     pthread_create(&timerThread,NULL,timer,(void *)1); //Has to pass a pointer to a function not a function by value.
 
     glutMainLoop();
-    pthread_join(timerThread,NULL);
     std::cout<<"Game over!\n";
     return 0;
 }
@@ -187,3 +173,4 @@ void keyUp(unsigned char key,int x,int y){
     }
     glutPostRedisplay();
 }
+

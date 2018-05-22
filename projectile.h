@@ -5,13 +5,12 @@
 #include <GL/glut.h>
 
 class Projectile{
-    float x,y,diameter;
+    float x,y,radius =0;
 public:
-    void setPosition(float x,float y,float radius);;
     void movePosition(float x,float y,float radius);
     void output();
     Projectile duplicate(Projectile& pro);
-    float getDiameter();
+    float getRadius();
     float getX();
     float getY();
     std::string describe();
