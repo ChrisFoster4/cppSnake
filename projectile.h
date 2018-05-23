@@ -4,14 +4,20 @@
 #include <iostream>
 #include <GL/glut.h>
 
+typedef struct snakePart{ //typedef for a linked list storing the cords of the parts of the snake
+    float x,y;
+    struct snakePart* next;
+}snakePart;
+
 class Projectile{
-    float x,y,radius =0;
+    float x,y,radius;
+    snakePart* snakeHead=(snakePart*) malloc(sizeof(snakePart));
 public:
-    void movePosition(float x,float y,float radius);
-    void output();
-    Projectile duplicate(Projectile& pro);
+    void movePosition(float x,float y);
+    Projectile();
+    void addSnakePart(float x,float y);
+    void outputSnakeCords();
     float getRadius();
     float getX();
     float getY();
-    std::string describe();
 } ;

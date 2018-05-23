@@ -22,60 +22,119 @@ bool sIsPressed = false;
 bool aIsPressed = false;
 bool dIsPressed = false;
 bool gameRunning = true;
+int direction = 12; //12 = up  3 = right 6 = down 9 = left
 int score = 0;
 
-#define tickSpeed 0.1
-#define screenWidth 1920
-#define screenHeight 1080
+
+#define TICK_DELAY 1
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 #define CREATE_RANDOM_CORD ((((rand()) % 200 + 1)-100)*0.01)//Generates a float between -1 and 1
-#define DEBUG 0 //Change to 1 for debug statments
+#define DEBUG 1 //Set to 1 for debug statements
 
-
-
-void detectCollisions(void){ //TODO move to util file
+/*
+ * Detects a collision between the snake and the the fruit
+ */
+void detectFruitCollision(void){ //TODO move to util file
     float projX = proj.getX();
     float projY = proj.getY();
     float proj2X = fruit.getX();
     float combinedRadius = proj.getRadius() + fruit.getRadius();
     float distanceBetween = sqrt(pow(proj2X-projX,2)+pow(fruit.getY()-proj.getY(),2));
 
-    if (DEBUG) {
-        std::cout << "Distance between=" << distanceBetween << '\n';
-        std::cout << "combined" << combinedRadius << '\n';
-    }
     if (distanceBetween <= combinedRadius){
-     score += 1;
-     std::cout<< "Score: " << score << '\n';
-     fruit.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD,0.05);
+        score++;
+        std::cout<< "Score: " << score << '\n';
+        fruit.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD);
+
     }
+}
+
+/*
+ * Detects collisions between the snake a wall and a collision the snake and itself
+ */
+void detectSnakeCollision(){
+    float projX = proj.getX();
+    float projY = proj.getY();
+    //Detecting wall collisions
     if (projX > 1) gameRunning = false;
     if (projX <-1) gameRunning = false;
     if (projY > 1) gameRunning = false;
     if (projY <-1) gameRunning = false;
+
 }
 
+
+void addSnakePart(snakePart* head,float x,float y){
+ snakePart* newPart = (snakePart*) malloc(sizeof(snakePart));
+ newPart->x = x;
+ newPart->y = y;
+ newPart->next=head->next;
+ head->next=newPart;
+}
+
+void outputSnakeCords(snakePart* head){
+    std::cout<<"Outputing snake cords\n";
+    head=head->next;//So the head of the list isn't printed out.It stores nothing.
+        for (int i=0;head!=NULL;i++){
+        std::cout << "The data at position: "<<i<<" is, x="<<head->x<<" y="<<head->y<<'\n';
+        head = head->next;
+    }
+    std::cout << "End of list\n";
+}
 
 /*
  This function is called whilst the system is idle in the glutMainLoop
 */
 void display(void){
+    glClear(GL_COLOR_BUFFER_BIT); //Creates a black background to the window
     //Can't use switch statement as it will block key combinations
-glClear(GL_COLOR_BUFFER_BIT); //Creates a black background to the window
-    if (lIsPressed) proj.movePosition(0.05,0,0.05);
-    if (hIsPressed) proj.movePosition(-0.05,0,0.05);
-    if (kIsPressed) proj.movePosition(0,0.05,0.05);
-    if (jIsPressed) proj.movePosition(0,-0.05,0.05);
 
-    proj.movePosition(0,0,0.05); //Forcing to draw the shapes every frame. TODO this seems kinda hacky
-    fruit.movePosition(0,0,0.05);
-    detectCollisions();
+    if (lIsPressed) direction=3;
+    if (jIsPressed) direction=6;
+    if (hIsPressed) direction=9;
+    if (kIsPressed) direction=12;
+
+    proj.movePosition(0,0); //Forcing to draw the shapes every frame. TODO this seems kinda hacky
+    fruit.movePosition(0,0);
+    detectFruitCollision();
+    detectSnakeCollision();
+}
+
+void glutCallbackTimer(int extra)
+{
+    glutPostRedisplay();
+    glutTimerFunc(30, glutCallbackTimer, 0);
 }
 
 void *timer(void *threadID){ //TODO make timer appear on screen //TODO move to util file
     float duration = 0;
     while(gameRunning){
-        duration += tickSpeed;
-        sleep(tickSpeed);
+        duration += TICK_DELAY;
+        switch (direction){ //TODO Move snake functionality should be moved to it's own thread
+            case 3:
+                proj.movePosition(0.05,0);
+                proj.addSnakePart(proj.getX(),proj.getY());
+                glutPostRedisplay();
+                break;
+            case 6:
+                proj.movePosition(0,-0.05);
+                proj.addSnakePart(proj.getX(),proj.getY());
+                glutPostRedisplay();
+                break;
+            case 9:
+                proj.movePosition(-0.05,0);
+                proj.addSnakePart(proj.getX(),proj.getY());
+                glutPostRedisplay();
+                break;
+            case 12:
+                proj.movePosition(0,0.05);
+                proj.addSnakePart(proj.getX(),proj.getY());
+                glutPostRedisplay();
+                break;
+        }
+        proj.outputSnakeCords();
+        sleep(TICK_DELAY);
     }
     std::cout<<"Game ran for: " << duration <<" seconds\n";
     exit(0);
@@ -86,15 +145,16 @@ int main(int argc, char** argv){
     srand(time(NULL)); //Seeds the random number generator. Without it same numbers generated every time the program is run
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(screenWidth,screenHeight);
+    glutInitWindowSize(SCREEN_WIDTH,SCREEN_HEIGHT);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("openGlStuff");
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPressed);
     glutKeyboardUpFunc(keyUp);
+    glutTimerFunc(0, glutCallbackTimer, 0);
 
     //Creating our objects
-    proj.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD,0.05);
+    proj.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD);
 
     //Creating a new thread for the timer
     pthread_t timerThread; //Only 1 thread for now so no need to store it in an array.
@@ -105,7 +165,7 @@ int main(int argc, char** argv){
     return 0;
 }
 
-void keyPressed(unsigned char key,int x,int y){
+void keyPressed(unsigned char key,int x,int y){ //x and y are the position of the mouse when the key is pressed
     switch(key){
         case 27:
             gameRunning = false;

@@ -6,11 +6,19 @@
 #include <pthread.h>
 #include <cmath> //For sqrt
 #include <string>
+#include <stdlib.h>
+#include "util.h"
 #include "projectile.h"
+
 
 float createRandCord(void);
 void displayMe(void);
 void drawRectangle(void);
 void keyPressed(unsigned char key,int x,int y);
 void keyUp(unsigned char key,int x,int y);
-void detectCollisions(void);
+void detectFruitCollision(void);
+
+void addSnakePart(snakePart* head,float x,float y);
+
+
+void outputSnakeCords(snakePart* head);
