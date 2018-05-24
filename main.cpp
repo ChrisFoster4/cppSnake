@@ -26,62 +26,9 @@ int direction = 12; //12 = up  3 = right 6 = down 9 = left
 int score = 0;
 
 
-#define TICK_DELAY 1
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
-#define CREATE_RANDOM_CORD ((((rand()) % 200 + 1)-100)*0.01)//Generates a float between -1 and 1
-#define DEBUG 1 //Set to 1 for debug statements
-
-/*
- * Detects a collision between the snake and the the fruit
- */
-void detectFruitCollision(void){ //TODO move to util file
-    float projX = proj.getX();
-    float projY = proj.getY();
-    float proj2X = fruit.getX();
-    float combinedRadius = proj.getRadius() + fruit.getRadius();
-    float distanceBetween = sqrt(pow(proj2X-projX,2)+pow(fruit.getY()-proj.getY(),2));
-
-    if (distanceBetween <= combinedRadius){
-        score++;
-        std::cout<< "Score: " << score << '\n';
-        fruit.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD);
-
-    }
-}
-
-/*
- * Detects collisions between the snake a wall and a collision the snake and itself
- */
-void detectSnakeCollision(){
-    float projX = proj.getX();
-    float projY = proj.getY();
-    //Detecting wall collisions
-    if (projX > 1) gameRunning = false;
-    if (projX <-1) gameRunning = false;
-    if (projY > 1) gameRunning = false;
-    if (projY <-1) gameRunning = false;
-
-}
 
 
-void addSnakePart(snakePart* head,float x,float y){
- snakePart* newPart = (snakePart*) malloc(sizeof(snakePart));
- newPart->x = x;
- newPart->y = y;
- newPart->next=head->next;
- head->next=newPart;
-}
 
-void outputSnakeCords(snakePart* head){
-    std::cout<<"Outputing snake cords\n";
-    head=head->next;//So the head of the list isn't printed out.It stores nothing.
-        for (int i=0;head!=NULL;i++){
-        std::cout << "The data at position: "<<i<<" is, x="<<head->x<<" y="<<head->y<<'\n';
-        head = head->next;
-    }
-    std::cout << "End of list\n";
-}
 
 /*
  This function is called whilst the system is idle in the glutMainLoop
@@ -97,12 +44,11 @@ void display(void){
 
     proj.movePosition(0,0); //Forcing to draw the shapes every frame. TODO this seems kinda hacky
     fruit.movePosition(0,0);
-    detectFruitCollision();
-    detectSnakeCollision();
+    proj.detectFruitCollision(fruit,&score);
+    proj.detectSnakeCollision(&gameRunning,&score);
 }
 
-void glutCallbackTimer(int extra)
-{
+void glutCallbackTimer(int extra){ //Forces the redisplay function to be called after a set amount of time
     glutPostRedisplay();
     glutTimerFunc(30, glutCallbackTimer, 0);
 }
@@ -133,7 +79,9 @@ void *timer(void *threadID){ //TODO make timer appear on screen //TODO move to u
                 glutPostRedisplay();
                 break;
         }
-        proj.outputSnakeCords();
+        proj.setLength(score);
+//        proj.outputSnakeCords();
+        proj.detectSnakeCollision(&gameRunning,&score);
         sleep(TICK_DELAY);
     }
     std::cout<<"Game ran for: " << duration <<" seconds\n";
@@ -147,7 +95,7 @@ int main(int argc, char** argv){
     glutInitDisplayMode(GLUT_SINGLE);
     glutInitWindowSize(SCREEN_WIDTH,SCREEN_HEIGHT);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("openGlStuff");
+    glutCreateWindow("c++ Snake");
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPressed);
     glutKeyboardUpFunc(keyUp);

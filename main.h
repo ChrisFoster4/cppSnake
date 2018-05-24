@@ -7,8 +7,13 @@
 #include <cmath> //For sqrt
 #include <string>
 #include <stdlib.h>
-#include "util.h"
 #include "projectile.h"
+
+#define TICK_DELAY 1
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
+#define CREATE_RANDOM_CORD ((((rand()) % 200 + 1)-100)*0.01)//Generates a float between -1 and 1
+#define DEBUG 1 //Set to 1 for debug statements
 
 
 float createRandCord(void);
@@ -18,7 +23,7 @@ void keyPressed(unsigned char key,int x,int y);
 void keyUp(unsigned char key,int x,int y);
 void detectFruitCollision(void);
 
-void addSnakePart(snakePart* head,float x,float y);
-
-
-void outputSnakeCords(snakePart* head);
+//void addSnakePart(snakePart* head,float x,float y);
+//
+//
+//void outputSnakeCords(snakePart* head);
