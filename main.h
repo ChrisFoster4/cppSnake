@@ -2,14 +2,12 @@
 #include <GL/glut.h> //apt install freeglut3-dev for Debian based systems
 #include <iostream> //Required for cout
 #include <ctime> //Needed for srand ( time(NULL) );
-#include <list> //Needed fro std::list
 #include <pthread.h>
 #include <cmath> //For sqrt
-#include <string>
 #include <stdlib.h>
-#include "projectile.h"
+#include "snake.h"
 
-#define TICK_DELAY 1
+#define TICK_DELAY 1 //Delay is seconds
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 #define CREATE_RANDOM_CORD ((((rand()) % 200 + 1)-100)*0.01)//Generates a float between -1 and 1

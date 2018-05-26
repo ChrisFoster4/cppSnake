@@ -10,7 +10,7 @@
 */
 
 
-Projectile proj; //TODO find a better way to make this accesible to display func than global variable
+Projectile snake; //TODO find a better way to make this accesible to display func than global variable
 Projectile fruit;
 bool nIsPressed = false;
 bool lIsPressed = false;
@@ -42,10 +42,11 @@ void display(void){
     if (hIsPressed) direction=9;
     if (kIsPressed) direction=12;
 
-    proj.movePosition(0,0); //Forcing to draw the shapes every frame. TODO this seems kinda hacky
+    snake.movePosition(0,0); //Forcing to draw the shapes every frame. TODO this seems kinda hacky
     fruit.movePosition(0,0);
-    proj.detectFruitCollision(fruit,&score);
-    proj.detectSnakeCollision(&gameRunning,&score);
+    snake.detectFruitCollision(fruit,&score);
+    snake.detectSnakeCollision(&gameRunning,&score);
+        snake.setLength(score);
 }
 
 void glutCallbackTimer(int extra){ //Forces the redisplay function to be called after a set amount of time
@@ -59,29 +60,26 @@ void *timer(void *threadID){ //TODO make timer appear on screen //TODO move to u
         duration += TICK_DELAY;
         switch (direction){ //TODO Move snake functionality should be moved to it's own thread
             case 3:
-                proj.movePosition(0.05,0);
-                proj.addSnakePart(proj.getX(),proj.getY());
+                snake.movePosition(0.05,0);
+                snake.addSnakePart(snake.getX(),snake.getY());
                 glutPostRedisplay();
                 break;
             case 6:
-                proj.movePosition(0,-0.05);
-                proj.addSnakePart(proj.getX(),proj.getY());
+                snake.movePosition(0,-0.05);
+                snake.addSnakePart(snake.getX(),snake.getY());
                 glutPostRedisplay();
                 break;
             case 9:
-                proj.movePosition(-0.05,0);
-                proj.addSnakePart(proj.getX(),proj.getY());
+                snake.movePosition(-0.05,0);
+                snake.addSnakePart(snake.getX(),snake.getY());
                 glutPostRedisplay();
                 break;
             case 12:
-                proj.movePosition(0,0.05);
-                proj.addSnakePart(proj.getX(),proj.getY());
+                snake.movePosition(0,0.05);
+                snake.addSnakePart(snake.getX(),snake.getY());
                 glutPostRedisplay();
                 break;
         }
-        proj.setLength(score);
-//        proj.outputSnakeCords();
-        proj.detectSnakeCollision(&gameRunning,&score);
         sleep(TICK_DELAY);
     }
     std::cout<<"Game ran for: " << duration <<" seconds\n";
@@ -101,8 +99,7 @@ int main(int argc, char** argv){
     glutKeyboardUpFunc(keyUp);
     glutTimerFunc(0, glutCallbackTimer, 0);
 
-    //Creating our objects
-    proj.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD);
+    snake.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD);
 
     //Creating a new thread for the timer
     pthread_t timerThread; //Only 1 thread for now so no need to store it in an array.

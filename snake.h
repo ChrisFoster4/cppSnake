@@ -12,6 +12,7 @@ typedef struct snakePart{ //typedef for a linked list storing the cords of the p
 }snakePart;
 
 class Projectile{
+private:
     float x,y,radius;
     snakePart* snakeHead=(snakePart*) malloc(sizeof(snakePart));
 public:
