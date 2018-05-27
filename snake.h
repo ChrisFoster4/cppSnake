@@ -23,7 +23,6 @@ public:
     void detectFruitCollision(Projectile& fruit,int* score);
     void detectSnakeCollision(bool* gameRunning,int* length);
     void drawSnakePart(float x,float y);
-    void outputSnakeCords();
     float getRadius();
     float getX();
     float getY();

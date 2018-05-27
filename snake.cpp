@@ -17,15 +17,6 @@ void Projectile::addSnakePart(float x,float y){
     newPart->next = firstSnakePart;
 }
 
-void Projectile::outputSnakeCords(){
-    snakePart* head = this->snakeHead;
-    head=head->next;//So the head of the list isn't printed out.It stores nothing.
-    for (int i=0;head!=nullptr;i++){
-        std::cout << "The data at position: "<<i<<" is, x="<<head->x<<" y="<<head->y<<'\n';
-        head = head->next;
-    }
-    std::cout << "End of list\n";
-}
 
 /*
  * Detects a collision between the snake and the the fruit
@@ -51,7 +42,6 @@ void Projectile::detectSnakeCollision(bool* gameRunning,int* length){
     if (this->y > 1) *gameRunning = false;
     if (this->y <-1) *gameRunning = false;
 
-    float combinedRadius = this->radius *2;
     double distanceBetween=0;
     snakePart* currentSnakePart = this->snakeHead->next; //The first part of the snake not the first node of the linked list
     for (;currentSnakePart!=nullptr;currentSnakePart=currentSnakePart->next){
@@ -62,45 +52,28 @@ void Projectile::detectSnakeCollision(bool* gameRunning,int* length){
     if (*length>1) { //TODO Check from a 3 long snake onwards
         snakePart *firstSnakePart = snakeHead->next;
         currentSnakePart = firstSnakePart->next;
-        if (firstSnakePart->x == NULL) {
-            std::cout << "firstSnakePart->x =NULL\n";
-        } else {
-            std::cout << "firstSnakePart ->x" << firstSnakePart->x << '\n';
-        }
-
         int i = 1;
-        std::cout << "Entering while loop\n";
-         while (currentSnakePart != NULL){
-        std::cout << "distanceBetween being calculated\n";
-        float x2, x1, y2, y1;
-        x2 = firstSnakePart->x;
-        x1 = currentSnakePart->x;
-        y2 = firstSnakePart->y;
-        y1 = currentSnakePart->y;
-        distanceBetween = sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
+        while (currentSnakePart != NULL){
+            float x2, x1, y2, y1;
+            x2 = firstSnakePart->x;
+            x1 = currentSnakePart->x;
+            y2 = firstSnakePart->y;
+            y1 = currentSnakePart->y;
+            distanceBetween = sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
 
-        std::cout << "distanceBetween calculated as :" << distanceBetween << '\n';
-        if (distanceBetween < this->radius - 0.01) {
-            std::cout << "Snake crash!\n";
-            std::cout << "distance between= " << distanceBetween << '\n';
-            std::cout << "firstSnakePart, x=" << firstSnakePart->x << " y=" << firstSnakePart->y << '\n';
-            std::cout << "currentSnakePart, x=" << currentSnakePart->x << " y=" << currentSnakePart->y << '\n';
-            std::cout << "i=" << i << " \n";
-            *gameRunning = false;
-        } else {
-            std::cout << "distance between firstpart and current=" << distanceBetween << " where part=" << i << " \n";
+            if (distanceBetween < this->radius - 0.01) {
+                std::cout << "Snake crash!\n";
+                *gameRunning = false;
+            }
+            currentSnakePart = currentSnakePart->next;
+            i++;
         }
-        currentSnakePart = currentSnakePart->next;
-        i++;
-    }
-    }else{
-        std::cout << "Not checking for collions\n";
     }
 }
 
 void Projectile::movePosition(float x,float y){
-    (*this).x += x; //Same as this->x. Another method of writing it
-    this->y += y;
+    this->y += y; //Can also be writen (*this).x +=x;
+    this->x += x;
     glBegin(GL_POLYGON);
     glVertex2f(this->x+(0.5*radius) ,this->y+(0.5*radius));
     glVertex2f(this->x-(0.5*radius) ,this->y+(0.5*radius));

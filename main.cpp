@@ -99,14 +99,13 @@ int main(int argc, char** argv){
     glutKeyboardUpFunc(keyUp);
     glutTimerFunc(0, glutCallbackTimer, 0);
 
-    snake.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD);
+    snake.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD); //Start the snake at a random position on the screen
 
     //Creating a new thread for the timer
     pthread_t timerThread; //Only 1 thread for now so no need to store it in an array.
     pthread_create(&timerThread,NULL,timer,(void *)1); //Has to pass a pointer to a function not a function by value.
 
     glutMainLoop();
-    std::cout<<"Game over!\n";
     return 0;
 }
 
