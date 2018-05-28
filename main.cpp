@@ -10,22 +10,6 @@
 */
 
 
-Projectile snake; //TODO find a better way to make this accesible to display func than global variable
-Projectile fruit;
-bool nIsPressed = false;
-bool lIsPressed = false;
-bool hIsPressed = false;
-bool jIsPressed = false;
-bool kIsPressed = false;
-bool wIsPressed = false;
-bool sIsPressed = false;
-bool aIsPressed = false;
-bool dIsPressed = false;
-bool gameRunning = true;
-int direction = 12; //12 = up  3 = right 6 = down 9 = left
-int score = 0;
-
-
 
 
 
@@ -35,18 +19,20 @@ int score = 0;
 */
 void display(void){
     glClear(GL_COLOR_BUFFER_BIT); //Creates a black background to the window
-    //Can't use switch statement as it will block key combinations
 
     if (lIsPressed && direction !=9 ) direction=3;
     if (jIsPressed && direction !=12) direction=6;
     if (hIsPressed && direction !=3 ) direction=9;
     if (kIsPressed && direction !=6 ) direction=12;
 
-    snake.movePosition(0,0); //Forcing to draw the shapes every frame. TODO this seems kinda hacky
+
+    //Forcing shapes to draw every frame. TODO remove this hack
+    snake.movePosition(0,0);
     fruit.movePosition(0,0);
+
     snake.detectFruitCollision(fruit,&score);
     snake.detectSnakeCollision(&gameRunning,&score);
-        snake.setLength(score);
+    snake.setLength(score);
 }
 
 void glutCallbackTimer(int extra){ //Forces the redisplay function to be called after a set amount of time
@@ -99,10 +85,12 @@ int main(int argc, char** argv){
     glutKeyboardUpFunc(keyUp);
     glutTimerFunc(0, glutCallbackTimer, 0);
 
-    snake.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD); //Start the snake at a random position on the screen
+
+    //Start the snake at a random position on the screen
+    snake.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD);
 
     //Creating a new thread for the timer
-    pthread_t timerThread; //Only 1 thread for now so no need to store it in an array.
+    pthread_t timerThread;
     pthread_create(&timerThread,NULL,timer,(void *)1); //Has to pass a pointer to a function not a function by value.
 
     glutMainLoop();
@@ -113,9 +101,6 @@ void keyPressed(unsigned char key,int x,int y){ //x and y are the position of th
     switch(key){
         case 27:
             gameRunning = false;
-            break;
-        case 'n':
-            nIsPressed = true;
             break;
         case 'l':
             lIsPressed = true;
@@ -129,18 +114,6 @@ void keyPressed(unsigned char key,int x,int y){ //x and y are the position of th
         case 'k':
             kIsPressed = true;
             break;
-        case 'w':
-            wIsPressed = true;
-            break;
-        case 'a':
-            aIsPressed = true;
-            break;
-        case 's':
-            sIsPressed = true;
-            break;
-        case 'd':
-            dIsPressed = true;
-            break;
     }
     glutPostRedisplay();
     // glutPostRedisplay merely sets a flag for the main loop to call the display function if no further events are pending, so timing a frame redraw through that is not very accurate.https://stackoverflow.com/questions/30381064/how-to-reduce-opengl-cpu-usage-and-or-how-to-use-opengl-properly
@@ -148,9 +121,6 @@ void keyPressed(unsigned char key,int x,int y){ //x and y are the position of th
 
 void keyUp(unsigned char key,int x,int y){
     switch (key){
-        case 'n':
-            nIsPressed = false;
-            break;
         case 'l':
             lIsPressed = false;
             break;
@@ -162,17 +132,6 @@ void keyUp(unsigned char key,int x,int y){
             break;
         case 'k':
             kIsPressed = false;
-        case 'w':
-            wIsPressed = false;
-            break;
-        case 'a':
-            aIsPressed = false;
-            break;
-        case 's':
-            sIsPressed = false;
-            break;
-        case 'd':
-            dIsPressed = false;
             break;
     }
     glutPostRedisplay();

@@ -1,12 +1,12 @@
 #include "snake.h"
 
-Projectile::Projectile(){
+Snake::Snake(){
     y=0;
     x=0;
     radius=0.05;
 }
 
-void Projectile::addSnakePart(float x,float y){
+void Snake::addSnakePart(float x,float y){
     snakePart* newPart = new snakePart;
     newPart->x=x;
     newPart->y=y;
@@ -21,7 +21,7 @@ void Projectile::addSnakePart(float x,float y){
 /*
  * Detects a collision between the snake and the the fruit
  */
-void Projectile::detectFruitCollision(Projectile& fruit,int* score){ //todo move to snake file. pass fruit via pointer
+void Snake::detectFruitCollision(Fruit& fruit,int* score){ //todo move to snake file. pass fruit via pointer
     float combinedRadius = this->radius + fruit.getRadius();
     float distanceBetween = sqrt(pow(fruit.getX()-this->x,2)+pow(fruit.getY()-this->y,2));
 
@@ -35,7 +35,7 @@ void Projectile::detectFruitCollision(Projectile& fruit,int* score){ //todo move
 /*
  * Detects collisions between the snake and a wall and a collision between the snake and itself
  */
-void Projectile::detectSnakeCollision(bool* gameRunning,int* length){
+void Snake::detectSnakeCollision(bool* gameRunning,int* length){
     //Detecting wall collisions
     if (this->x > 1) *gameRunning = false;
     if (this->x <-1) *gameRunning = false;
@@ -69,7 +69,7 @@ void Projectile::detectSnakeCollision(bool* gameRunning,int* length){
     }
 }
 
-void Projectile::movePosition(float x,float y){
+void Snake::movePosition(float x,float y){
     this->y += y; //Can also be writen (*this).x +=x;
     this->x += x;
     glBegin(GL_POLYGON);
@@ -82,20 +82,8 @@ void Projectile::movePosition(float x,float y){
     glFlush();
 }
 
-void Projectile::moveToRandomPosition(void){
-    this->x = CREATE_RANDOM_CORD;
-    this->y = CREATE_RANDOM_CORD;
-    glBegin(GL_POLYGON);
-    glVertex2f(this->x+(0.5*radius) ,this->y+(0.5*radius));
-    glVertex2f(this->x-(0.5*radius) ,this->y+(0.5*radius));
-    glVertex2f(this->x-(0.5*radius) ,this->y-(0.5*radius));
-    glVertex2f(this->x+(0.5*radius) ,this->y-(0.5*radius));
-    glEnd();
-    glutSwapBuffers();
-    glFlush();
-}
 
-void Projectile::drawSnakePart(float x,float y){
+void Snake::drawSnakePart(float x,float y){
     glBegin(GL_POLYGON);
     glVertex2f(x+(0.5*radius) ,y+(0.5*radius));
     glVertex2f(x-(0.5*radius) ,y+(0.5*radius));
@@ -106,7 +94,7 @@ void Projectile::drawSnakePart(float x,float y){
     glFlush();
 }
 
-void Projectile::setLength(int snakeLength){
+void Snake::setLength(int snakeLength){
         snakePart* head = new snakePart;
         head=this->snakeHead;
         for (int i=0;i<=snakeLength;i++){
@@ -123,14 +111,10 @@ void Projectile::setLength(int snakeLength){
 }
 
 
-float Projectile::getRadius(void){
-    return this->radius;
-}
-
-float Projectile::getX(void){
+float Snake::getX(void){
     return this->x;
 }
 
-float Projectile::getY(void){
+float Snake::getY(void){
     return this->y;
 }
