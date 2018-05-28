@@ -14,7 +14,7 @@ typedef struct snakePart{ //typedef for a linked list storing the cords of the p
 class Projectile{
 private:
     float x,y,radius;
-    snakePart* snakeHead=(snakePart*) malloc(sizeof(snakePart));
+    snakePart* snakeHead= new snakePart;
 public:
     void movePosition(float x,float y);
     Projectile();
@@ -23,7 +23,8 @@ public:
     void detectFruitCollision(Projectile& fruit,int* score);
     void detectSnakeCollision(bool* gameRunning,int* length);
     void drawSnakePart(float x,float y);
-    float getRadius();
-    float getX();
-    float getY();
-} ;
+    void moveToRandomPosition(void);
+    float getRadius(void);
+    float getX(void);
+    float getY(void);
+};

@@ -28,7 +28,7 @@ void Projectile::detectFruitCollision(Projectile& fruit,int* score){ //todo move
     if (distanceBetween <= combinedRadius){
         *score=*score+1;
         std::cout<< "Score: " << *score << '\n';
-        fruit.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD);
+        fruit.moveToRandomPosition();
     }
 }
 
@@ -45,9 +45,7 @@ void Projectile::detectSnakeCollision(bool* gameRunning,int* length){
     double distanceBetween=0;
     snakePart* currentSnakePart = this->snakeHead->next; //The first part of the snake not the first node of the linked list
     for (;currentSnakePart!=nullptr;currentSnakePart=currentSnakePart->next){
-        if (currentSnakePart->x!=NULL){
             drawSnakePart(currentSnakePart->x,currentSnakePart->y);
-        }
     }
     if (*length>1) { //TODO Check from a 3 long snake onwards
         snakePart *firstSnakePart = snakeHead->next;
@@ -74,6 +72,19 @@ void Projectile::detectSnakeCollision(bool* gameRunning,int* length){
 void Projectile::movePosition(float x,float y){
     this->y += y; //Can also be writen (*this).x +=x;
     this->x += x;
+    glBegin(GL_POLYGON);
+    glVertex2f(this->x+(0.5*radius) ,this->y+(0.5*radius));
+    glVertex2f(this->x-(0.5*radius) ,this->y+(0.5*radius));
+    glVertex2f(this->x-(0.5*radius) ,this->y-(0.5*radius));
+    glVertex2f(this->x+(0.5*radius) ,this->y-(0.5*radius));
+    glEnd();
+    glutSwapBuffers();
+    glFlush();
+}
+
+void Projectile::moveToRandomPosition(void){
+    this->x = CREATE_RANDOM_CORD;
+    this->y = CREATE_RANDOM_CORD;
     glBegin(GL_POLYGON);
     glVertex2f(this->x+(0.5*radius) ,this->y+(0.5*radius));
     glVertex2f(this->x-(0.5*radius) ,this->y+(0.5*radius));
@@ -112,14 +123,14 @@ void Projectile::setLength(int snakeLength){
 }
 
 
-float Projectile::getRadius(){
+float Projectile::getRadius(void){
     return this->radius;
 }
 
-float Projectile::getX(){
+float Projectile::getX(void){
     return this->x;
 }
 
-float Projectile::getY(){
+float Projectile::getY(void){
     return this->y;
 }

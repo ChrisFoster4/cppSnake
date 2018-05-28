@@ -37,10 +37,10 @@ void display(void){
     glClear(GL_COLOR_BUFFER_BIT); //Creates a black background to the window
     //Can't use switch statement as it will block key combinations
 
-    if (lIsPressed) direction=3;
-    if (jIsPressed) direction=6;
-    if (hIsPressed) direction=9;
-    if (kIsPressed) direction=12;
+    if (lIsPressed && direction !=9 ) direction=3;
+    if (jIsPressed && direction !=12) direction=6;
+    if (hIsPressed && direction !=3 ) direction=9;
+    if (kIsPressed && direction !=6 ) direction=12;
 
     snake.movePosition(0,0); //Forcing to draw the shapes every frame. TODO this seems kinda hacky
     fruit.movePosition(0,0);
