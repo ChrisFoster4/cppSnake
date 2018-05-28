@@ -7,11 +7,11 @@ Projectile::Projectile(){
 }
 
 void Projectile::addSnakePart(float x,float y){
-    snakePart* newPart = (snakePart*) malloc(sizeof(snakePart));
+    snakePart* newPart = new snakePart;
     newPart->x=x;
     newPart->y=y;
     newPart->next=this->snakeHead->next;
-    snakePart* firstSnakePart = (snakePart*) malloc(sizeof(snakePart));
+    snakePart* firstSnakePart = new snakePart;
     firstSnakePart = snakeHead->next;
     snakeHead->next = newPart;
     newPart->next = firstSnakePart;
@@ -96,7 +96,7 @@ void Projectile::drawSnakePart(float x,float y){
 }
 
 void Projectile::setLength(int snakeLength){
-        snakePart* head = (snakePart*) malloc(sizeof(snakePart));
+        snakePart* head = new snakePart;
         head=this->snakeHead;
         for (int i=0;i<=snakeLength;i++){
             head=head->next;
