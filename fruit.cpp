@@ -9,6 +9,7 @@ Fruit::Fruit(){
 void Fruit::moveToRandomPosition(void){
     this->x = CREATE_RANDOM_CORD;
     this->y = CREATE_RANDOM_CORD;
+
     glBegin(GL_POLYGON);
     glVertex2f(this->x+(0.5*radius) ,this->y+(0.5*radius));
     glVertex2f(this->x-(0.5*radius) ,this->y+(0.5*radius));
@@ -16,7 +17,8 @@ void Fruit::moveToRandomPosition(void){
     glVertex2f(this->x+(0.5*radius) ,this->y-(0.5*radius));
     glEnd();
     glutSwapBuffers();
-    glFlush();
+    glFlush(); //Forces defined openGL command to be run
+
 }
 
 void Fruit::movePosition(float x,float y){

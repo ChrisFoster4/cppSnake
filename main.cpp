@@ -30,9 +30,9 @@ void display(void){
     snake.movePosition(0,0);
     fruit.movePosition(0,0);
 
-    snake.detectFruitCollision(fruit,&score);
-    snake.detectSnakeCollision(&gameRunning,&score);
-    snake.setLength(score);
+    snake.detectFruitCollision(fruit,&score,&length);
+    snake.detectSnakeCollision(&gameRunning,&length);
+    snake.setLength(length);
 }
 
 void glutCallbackTimer(int extra){ //Forces the redisplay function to be called after a set amount of time
@@ -86,8 +86,16 @@ int main(int argc, char** argv){
     glutTimerFunc(0, glutCallbackTimer, 0);
 
 
-    //Start the snake at a random position on the screen
-    snake.movePosition(CREATE_RANDOM_CORD,CREATE_RANDOM_CORD);
+    //Creating a 3 long snake with it's head at (0,0)
+    snake.movePosition(0,-0.1);
+    snake.movePosition(0,0.05);
+    snake.addSnakePart(snake.getX(),snake.getY());
+    snake.movePosition(0,0.05);
+    snake.addSnakePart(snake.getX(),snake.getY());
+
+
+    //Move the fruit to it's random starting point onscreen
+    fruit.moveToRandomPosition();
 
     //Creating a new thread for the timer
     pthread_t timerThread;

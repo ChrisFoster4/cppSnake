@@ -21,12 +21,13 @@ void Snake::addSnakePart(float x,float y){
 /*
  * Detects a collision between the snake and the the fruit
  */
-void Snake::detectFruitCollision(Fruit& fruit,int* score){ //todo move to snake file. pass fruit via pointer
+void Snake::detectFruitCollision(Fruit& fruit,int* score,int* length){ //todo move to snake file. pass fruit via pointer
     float combinedRadius = this->radius + fruit.getRadius();
     float distanceBetween = sqrt(pow(fruit.getX()-this->x,2)+pow(fruit.getY()-this->y,2));
 
     if (distanceBetween <= combinedRadius){
         *score=*score+1;
+        *length=*length+1;
         std::cout<< "Score: " << *score << '\n';
         fruit.moveToRandomPosition();
     }

@@ -5,8 +5,7 @@
 
 class Fruit {
 private:
-    float x,y=0;
-    float radius =0.05;
+    float x,y,radius;
 public:
     Fruit();
     void moveToRandomPosition(void);

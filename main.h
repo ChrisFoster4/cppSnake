@@ -30,3 +30,4 @@ bool kIsPressed = false;
 bool gameRunning = true;
 int direction = 12; //12 = up  3 = right 6 = down 9 = left
 int score = 0;
+int length=2;

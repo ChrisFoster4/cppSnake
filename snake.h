@@ -21,7 +21,7 @@ public:
     Snake();
     void addSnakePart(float x,float y);
     void setLength(int snakeLength);
-    void detectFruitCollision(Fruit& fruit,int* score);
+    void detectFruitCollision(Fruit& fruit,int* score,int* length);
     void detectSnakeCollision(bool* gameRunning,int* length);
     void drawSnakePart(float x,float y);
     void moveToRandomPosition(void);
